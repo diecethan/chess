@@ -72,7 +72,7 @@ namespace chess {
         int dstCol = dst[1] - 49;
 
         Piece* piece = getPiece(srcRow, srcCol);
-        
+        cout << currColor << endl;
         if (piece == nullptr || piece->getColor() != currColor) {
             // throw error
             return false;
@@ -90,9 +90,11 @@ namespace chess {
             board[dstRow][dstCol] = piece;
             board[srcRow][srcCol] = nullptr;
             
+            currColor = !currColor;
             return true;
         }
         
+        currColor = !currColor;
         return false;
     }
 }

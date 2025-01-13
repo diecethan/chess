@@ -9,7 +9,5 @@ using namespace chess;
 int main() {
     Board board;
     board.printBoard();
-    bool x = board.move("h7", "g5");
-    board.printBoard();
     return EXIT_SUCCESS;
 }

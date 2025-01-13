@@ -7,6 +7,8 @@ using namespace std;
 
 namespace chess {
     bool Knight::legalMove(Board &board, int row, int col) {
+        // Check that the move follows the correct Knight movement
+        // Check (if there is a piece) if we can take the piece or not
         if (abs(getRow() - row) == 1 && abs(getCol() - col) == 2) {
             if (board.getPiece(row, col) != nullptr && board.getPiece(row, col)->getColor() == getColor()) {
                 return false;

@@ -12,10 +12,13 @@ namespace chess {
             return false;
         }
 
+        // Check that the piece only moved up/down or right/left
         if (getRow() != row && getCol() != col) {
             return false;
         }
 
+        // Check that there are no pieces along the path from source to destination
+        // Checks the direction the Rook traveled in, then iterates from source to destination
         bool traversalDir = getRow() == row;
         if (traversalDir) {
             if (getCol() < col) {
@@ -47,6 +50,7 @@ namespace chess {
             }
         }
         
+        // Check (if there is a piece) if we can take the piece or not
         if (board.getPiece(row, col) != nullptr && board.getPiece(row, col)->getColor() == getColor()) {
             return false;
         }
