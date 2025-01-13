@@ -11,10 +11,11 @@ namespace chess {
             Board();
             void printBoard() const;
             Piece* getPiece(int row, int col) const { return board[row][col]; }
-            void move(std::string input);
+            bool move(std::string src, std::string dst);
 
         private:
             std::vector<std::vector<Piece*>> board;
+            bool currColor = true;
     };
 }
 

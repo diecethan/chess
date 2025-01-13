@@ -11,10 +11,10 @@ namespace chess {
     }
 
     void King::printPiece() {
-        if (getColor() == 0) {
-            cout << "♔";
-        } else {
+        if (getColor()) {
 			cout << "♚";
+        } else {
+            cout << "♔";
         }
 	}
 }

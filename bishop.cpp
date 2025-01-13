@@ -7,14 +7,22 @@ using namespace std;
 
 namespace chess {
     bool Bishop::legalMove(Board &board, int row, int col) {
-        return true;
+        if (getRow() == row && getCol() == col) {
+            return false;
+        }
+
+        if (abs(getRow() - row) == abs(getCol() - col)) {
+            return true;
+        }
+
+        return false;
     }
 
     void Bishop::printPiece() {
-        if (getColor() == 0) {
-            cout << "♗";
-        } else {
+        if (getColor()) {
 			cout << "♝";
+        } else {
+            cout << "♗";
         }
 	}
 }

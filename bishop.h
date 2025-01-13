@@ -7,9 +7,8 @@
 namespace chess {
     class Bishop : public Piece {
         public:
-            Bishop(int row, int col, int player) : Piece(row, col, player, 3) {}
+            Bishop(int row, int col, bool player) : Piece(row, col, player, 3) {}
             bool legalMove(Board &board, int row, int col);
-            bool check(Board &board);
             void printPiece();
     };
 }

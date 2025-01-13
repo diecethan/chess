@@ -23,14 +23,14 @@ namespace chess {
             vector<Piece*> pieces(8, nullptr);
             
             if (row == 0 || row == 7) {
-                pieces[0] = (row == 0) ? new Rook(0, 0, 0) : new Rook(7, 0, 1);
-                pieces[1] = (row == 0) ? new Knight(0, 1, 0) : new Knight(7, 1, 1);
-                pieces[2] = (row == 0) ? new Bishop(0, 2, 0) : new Bishop(7, 2, 1);
-                pieces[3] = (row == 0) ? new Queen(0, 3, 0) : new Queen(7, 3, 1);
-                pieces[4] = (row == 0) ? new King(0, 4, 0) : new King(7, 4, 1);
-                pieces[5] = (row == 0) ? new Bishop(0, 5, 0) : new Bishop(7, 5, 1);
-                pieces[6] = (row == 0) ? new Knight(0, 6, 0) : new Knight(7, 6, 1);
-                pieces[7] = (row == 0) ? new Rook(0, 7, 0) : new Rook(7, 7, 1);
+                pieces[0] = (row == 0) ? new Rook(0, 0, false) : new Rook(7, 0, true);
+                pieces[1] = (row == 0) ? new Knight(0, 1, false) : new Knight(7, 1, true);
+                pieces[2] = (row == 0) ? new Bishop(0, 2, false) : new Bishop(7, 2, true);
+                pieces[3] = (row == 0) ? new Queen(0, 3, false) : new Queen(7, 3, true);
+                pieces[4] = (row == 0) ? new King(0, 4, false) : new King(7, 4, true);
+                pieces[5] = (row == 0) ? new Bishop(0, 5, false) : new Bishop(7, 5, true);
+                pieces[6] = (row == 0) ? new Knight(0, 6, false) : new Knight(7, 6, true);
+                pieces[7] = (row == 0) ? new Rook(0, 7, false) : new Rook(7, 7, true);
             }
             else if (row == 1 || row == 6) {
                 for (int col = 0; col < 8; col++) {
@@ -55,6 +55,8 @@ namespace chess {
                 if (board[row][col] != nullptr) {
                     board[row][col]->printPiece();
                     cout << " ";
+                } else {
+                    cout << "  ";
                 }
 
             }
@@ -62,20 +64,35 @@ namespace chess {
         }
     }
 
-    void Board::move(string input) {
-        char piece;
-        int row, col;
+    bool Board::move(string src, string dst) {
+        int srcRow = src[0] - 97;
+        int srcCol = src[1] - 49;
 
-        if (input[1] != 'x') {
-            piece = (isupper(input[0])) ? input[0] : 'p';
-            row = (piece == 'p') ? (input[0] - 97) : (input[1] - 97);
-            col = (piece == 'p') ? (input[1] - 49) : (input[2] - 49);
-        } else {
-            piece = (isupper(input[0])) ? input[0] : 'p';
-            row = (piece == 'p') ? (input[1] - 97) : (input[2] - 97);
-            col = (piece == 'p') ? (input[2] - 49) : (input[3] - 49);
+        int dstRow = dst[0] - 97;
+        int dstCol = dst[1] - 49;
+
+        Piece* piece = getPiece(srcRow, srcCol);
+        
+        if (piece == nullptr || piece->getColor() != currColor) {
+            // throw error
+            return false;
         }
 
-        cout << piece << " " << row << " " << col << endl;
+        // and current player's king will not be in check
+        if (piece->legalMove(*this, dstRow, dstCol)) {
+            if (board[dstRow][dstCol] != nullptr) {
+                delete board[dstRow][dstCol];
+            }
+
+            piece->setRow(dstRow);
+            piece->setCol(dstCol);
+
+            board[dstRow][dstCol] = piece;
+            board[srcRow][srcCol] = nullptr;
+            
+            return true;
+        }
+        
+        return false;
     }
 }

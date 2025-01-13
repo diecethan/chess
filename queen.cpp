@@ -7,14 +7,21 @@ using namespace std;
 
 namespace chess {
     bool Queen::legalMove(Board &board, int row, int col) {
+        if (getRow() != row && getCol() != col) {
+            if (abs(getRow() - row) != abs(getCol() - col)) {
+                return false;
+            }
+            return true;
+        }
+
         return true;
     }
 
     void Queen::printPiece() {
-        if (getColor() == 0) {
-            cout << "♕";
-        } else {
+        if (getColor()) {
 			cout << "♛";
+        } else {
+            cout << "♕";
         }
 	}
 }
