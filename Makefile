@@ -5,18 +5,19 @@ TMPMAKE=tmpMake
 CPPFLAGS=${STD} ${OPT}
 CFLAGS=${OPT}
 
-%.o: %.cpp
-	$(CPP) -c $(CPPFLAGS) $<
-
-%: %.cpp
-	$(CPP) -o $@ $(CPPFLAGS) $<
-
-CHESSSRCS = chess.cpp
+# Define source and object files
+CHESSSRCS = chess.cpp board.cpp knight.cpp rook.cpp bishop.cpp queen.cpp king.cpp pawn.cpp
 CHESSOBJS = $(CHESSSRCS:.cpp=.o)
 
 ALL = chess
 
 all: $(CHESSOBJS) $(ALL)
+
+chess: $(CHESSOBJS)
+	$(CPP) -o $@ $(CPPFLAGS) $(CHESSOBJS)
+
+%.o: %.cpp
+	$(CPP) -c $(CPPFLAGS) $<
 
 clean:
 	/bin/rm -f $(CHESSOBJS) $(ALL)
@@ -30,4 +31,11 @@ depend: $(CHESSSRCS)
 	/bin/mv -f $(TMPMAKE) Makefile
 
 # DEPENDENTS
-chess.o: piece.h knight.h
+chess.o: piece.h pawn.h rook.h knight.h bishop.h queen.h king.h board.h
+board.o: piece.h pawn.h rook.h knight.h bishop.h queen.h king.h board.h
+knight.o: piece.h knight.h
+rook.o: piece.h rook.h
+bishop.o: piece.h bishop.h
+queen.o: piece.h queen.h
+king.o: piece.h king.h
+pawn.o: piece.h pawn.h

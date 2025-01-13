@@ -1,12 +1,14 @@
 #include <iostream>
 #include <vector>
 
-#include "piece.h"
+#include "board.h"
 
 using namespace std;
 using namespace chess;
 
 int main() {
-    cout << "hello" << endl;
+    Board board;
+    board.printBoard();
+    board.move("a2");
     return EXIT_SUCCESS;
 }
