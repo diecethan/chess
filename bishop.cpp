@@ -7,6 +7,7 @@ using namespace std;
 
 namespace chess {
     bool Bishop::legalMove(Board &board, int row, int col) {
+        // source = destination
         if (getRow() == row && getCol() == col) {
             return false;
         }

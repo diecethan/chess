@@ -7,7 +7,24 @@ using namespace std;
 
 namespace chess {
     bool Knight::legalMove(Board &board, int row, int col) {
-        return true;
+        if (abs(getRow() - row) == 1 && abs(getCol() - col) == 2) {
+            if (board.getPiece(row, col) != nullptr && board.getPiece(row, col)->getColor() == getColor()) {
+                return false;
+            }
+
+            return true;
+        }
+
+        if (abs(getRow() - row) == 2 && abs(getCol() - col) == 1) {
+            if (board.getPiece(row, col) != nullptr && board.getPiece(row, col)->getColor() == getColor()) {
+                return false;
+            
+            }
+            
+            return true;
+        }
+
+        return false;
     }
 
     void Knight::printPiece() {
@@ -16,5 +33,5 @@ namespace chess {
         } else {
             cout << "♘";
         }
-	}
+    }
 }
