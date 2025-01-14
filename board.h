@@ -17,7 +17,8 @@ namespace chess {
         private:
             std::vector<std::vector<Piece*>> board;
             std::vector<Piece*> updatePieces;   // used to reset en passantability after one turn
-            bool currColor = true;
+            bool currColor;
+            int p1pts, p2pts;
     };
 }
 

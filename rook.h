@@ -7,7 +7,7 @@
 namespace chess {
     class Rook : public Piece {
         public:
-            Rook(int row, int col, bool player) : Piece(row, col, player, 5) {}
+            Rook(int row, int col, bool player) : Piece(row, col, player, 5, 'R') {}
             bool legalMove(Board &board, int row, int col);
             void printPiece();
     };

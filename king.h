@@ -7,10 +7,11 @@
 namespace chess {
     class King : public Piece {
         public:
-            King(int row, int col, bool player) : Piece(row, col, player, 0) {}
+            King(int row, int col, bool player) : Piece(row, col, player, 0, 'K') {}
             bool legalMove(Board &board, int row, int col);
             void printPiece();
-            bool inCheck();
+            bool inCheck(const Board &board);
+            bool checkmate(Board &board);
     };
 }
 

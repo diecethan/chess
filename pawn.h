@@ -7,7 +7,7 @@
 namespace chess {
     class Pawn : public Piece {
         public:
-            Pawn(int row, int col, bool player) : Piece(row, col, player, 1) {}
+            Pawn(int row, int col, bool player) : Piece(row, col, player, 1, 'P') {}
             bool legalMove(Board &board, int row, int col);
             void printPiece();
             bool getPassant() { return enPassantable; }

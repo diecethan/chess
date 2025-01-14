@@ -18,7 +18,7 @@
 using namespace std;
 
 namespace chess {
-    Board::Board() {
+    Board::Board() : currColor(true), p1pts(0), p2pts(0) {
         for (int row = 0; row < 8; row++) {
             vector<Piece*> pieces(8, nullptr);
             
@@ -40,6 +40,9 @@ namespace chess {
 
             board.push_back(pieces);
         }
+        board[4][3] = new King(4, 3, true);
+        board[4][1] = new Rook(3, 3, false);
+        board[4][2] = new Queen(2, 3, true);
     }
 
     void Board::printBoard() const {
@@ -62,10 +65,12 @@ namespace chess {
             }
             cout << endl;
         }
+
+        bool x = static_cast<King*>(board[4][3])->inCheck(*this);
+        cout << x << endl;
     }
 
     bool Board::move(string src, string dst) {
-        cout << updatePieces.size() << endl;
         int srcRow = src[1] - 49;
         int srcCol = src[0] - 97;
 
