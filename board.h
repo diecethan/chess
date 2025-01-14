@@ -6,6 +6,7 @@
 #include "piece.h"
 
 namespace chess {
+    class Pawn;
     class Board {
         public:
             Board();
@@ -15,6 +16,7 @@ namespace chess {
 
         private:
             std::vector<std::vector<Piece*>> board;
+            std::vector<Piece*> updatePieces;   // used to reset en passantability after one turn
             bool currColor = true;
     };
 }

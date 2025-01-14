@@ -7,6 +7,11 @@ using namespace std;
 
 namespace chess {
     bool Queen::legalMove(Board &board, int row, int col) {
+        // source = destination
+        if (getRow() == row && getCol() == col) {
+            return false;
+        }
+
         // Moved horizontally/vertically or diagonally
         bool hor = (getRow() == row) || (getCol() == col);
 

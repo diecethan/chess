@@ -10,6 +10,11 @@ namespace chess {
             Pawn(int row, int col, bool player) : Piece(row, col, player, 1) {}
             bool legalMove(Board &board, int row, int col);
             void printPiece();
+            bool getPassant() { return enPassantable; }
+            void setPassant(bool ep) { enPassantable = ep; } 
+        private:
+            bool hasMoved = false;
+            bool enPassantable = false;
     };
 }
 

@@ -23,18 +23,18 @@ namespace chess {
             vector<Piece*> pieces(8, nullptr);
             
             if (row == 0 || row == 7) {
-                pieces[0] = (row == 0) ? new Rook(0, 0, false) : new Rook(7, 0, true);
-                pieces[1] = (row == 0) ? new Knight(0, 1, false) : new Knight(7, 1, true);
-                pieces[2] = (row == 0) ? new Bishop(0, 2, false) : new Bishop(7, 2, true);
-                pieces[3] = (row == 0) ? new Queen(0, 3, false) : new Queen(7, 3, true);
-                pieces[4] = (row == 0) ? new King(0, 4, false) : new King(7, 4, true);
-                pieces[5] = (row == 0) ? new Bishop(0, 5, false) : new Bishop(7, 5, true);
-                pieces[6] = (row == 0) ? new Knight(0, 6, false) : new Knight(7, 6, true);
-                pieces[7] = (row == 0) ? new Rook(0, 7, false) : new Rook(7, 7, true);
+                pieces[0] = (row == 0) ? new Rook(0, 0, true) : new Rook(7, 0, false);
+                pieces[1] = (row == 0) ? new Knight(0, 1, true) : new Knight(7, 1, false);
+                pieces[2] = (row == 0) ? new Bishop(0, 2, true) : new Bishop(7, 2, false);
+                pieces[3] = (row == 0) ? new Queen(0, 3, true) : new Queen(7, 3, false);
+                pieces[4] = (row == 0) ? new King(0, 4, true) : new King(7, 4, false);
+                pieces[5] = (row == 0) ? new Bishop(0, 5, true) : new Bishop(7, 5, false);
+                pieces[6] = (row == 0) ? new Knight(0, 6, true) : new Knight(7, 6, false);
+                pieces[7] = (row == 0) ? new Rook(0, 7, true) : new Rook(7, 7, false);
             }
             else if (row == 1 || row == 6) {
                 for (int col = 0; col < 8; col++) {
-                    pieces[col] = (row == 1) ? new Pawn(row, col, 0) : new Pawn(row, col, 1);
+                    pieces[col] = (row == 1) ? new Pawn(row, col, true) : new Pawn(row, col, false);
                 }
             }
 
@@ -45,12 +45,12 @@ namespace chess {
     void Board::printBoard() const {
         cout << "  ";
         for (int col = 0; col < 8; col++) {
-            cout << (col + 1) << " ";
+            cout << static_cast<char>(col + 97) << " ";
         }
         cout << endl;
 
-        for (int row = 0; row < 8; row++) {
-            cout << static_cast<char>(row + 97) << " ";
+        for (int row = 7; row >= 0; row--) {
+            cout << row + 1 << " ";
             for (int col = 0; col < 8; col++) {
                 if (board[row][col] != nullptr) {
                     board[row][col]->printPiece();
@@ -65,21 +65,40 @@ namespace chess {
     }
 
     bool Board::move(string src, string dst) {
-        int srcRow = src[0] - 97;
-        int srcCol = src[1] - 49;
+        cout << updatePieces.size() << endl;
+        int srcRow = src[1] - 49;
+        int srcCol = src[0] - 97;
 
-        int dstRow = dst[0] - 97;
-        int dstCol = dst[1] - 49;
+        int dstRow = dst[1] - 49;
+        int dstCol = dst[0] - 97;
 
         Piece* piece = getPiece(srcRow, srcCol);
-        cout << currColor << endl;
         if (piece == nullptr || piece->getColor() != currColor) {
-            // throw error
             return false;
         }
 
         // and current player's king will not be in check
-        if (piece->legalMove(*this, dstRow, dstCol)) {
+        if (piece->legalMove(*this, dstRow, dstCol)) {     
+            // En Passant updating and checking       
+            if (!updatePieces.empty()) {
+                for (int i = 0; i < updatePieces.size(); i++) {
+                    static_cast<Pawn*>(updatePieces[i])->setPassant(false);
+                }
+                updatePieces.clear();
+            }
+
+            if (piece->getPoints() == 1) {
+                if (static_cast<Pawn*>(piece)->getPassant()) {
+                    updatePieces.push_back(piece);
+                }
+
+                if (board[dstRow][dstCol] == nullptr &&  srcCol != dstCol) {
+                    delete board[dstRow][srcCol];
+                    board[dstRow][srcCol] = nullptr;
+                }
+            }
+
+            // Basic updating and checking
             if (board[dstRow][dstCol] != nullptr) {
                 delete board[dstRow][dstCol];
             }
@@ -89,11 +108,11 @@ namespace chess {
 
             board[dstRow][dstCol] = piece;
             board[srcRow][srcCol] = nullptr;
-            
+
             currColor = !currColor;
             return true;
         }
-        
+
         currColor = !currColor;
         return false;
     }
