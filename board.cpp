@@ -82,7 +82,7 @@ namespace chess {
         }
 
         // and current player's king will not be in check
-        if (piece->legalMove(*this, dstRow, dstCol)) {     
+        if (piece->legalMove(*this, dstRow, dstCol)) {
             // En Passant updating and checking       
             if (!updatePieces.empty()) {
                 for (int i = 0; i < updatePieces.size(); i++) {
@@ -132,7 +132,6 @@ namespace chess {
             return true;
         }
 
-        currColor = !currColor;
         return false;
     }
 
@@ -142,9 +141,29 @@ namespace chess {
 
         bool result;
         if (currColor) {
-            result = static_cast<King*>(getPiece(whiteKing[0], whiteKing[1]))->inCheck(*this);
+            if (piece->getPoints() == 0) {
+                piece->setRow(dstRow);
+                piece->setCol(dstCol);
+
+                result = static_cast<King*>(piece)->inCheck(*this);
+
+                piece->setRow(srcRow);
+                piece->setCol(srcCol);
+            } else {
+                result = static_cast<King*>(getPiece(whiteKing[0], whiteKing[1]))->inCheck(*this);
+            }
         } else {
-            result = static_cast<King*>(getPiece(blackKing[0], blackKing[1]))->inCheck(*this);
+            if (piece->getPoints() == 0) {
+                piece->setRow(dstRow);
+                piece->setCol(dstCol);
+
+                result = static_cast<King*>(piece)->inCheck(*this);
+
+                piece->setRow(srcRow);
+                piece->setCol(srcCol);
+            } else {
+                result = static_cast<King*>(getPiece(blackKing[0], blackKing[1]))->inCheck(*this);
+            }
         }
 
         board[srcRow][srcCol] = piece;

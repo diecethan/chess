@@ -7,6 +7,19 @@ using namespace std;
 
 namespace chess {
     bool King::legalMove(Board &board, int row, int col) {
+        if (abs(getRow() - row) > 1 || abs(getCol() - col) > 1) {
+            return false;
+        }
+        // Check (if there is a piece) if we can take the piece or not
+        if (board.getPiece(row, col) != nullptr && board.getPiece(row, col)->getColor() == getColor()) {
+            return false;
+        }
+
+        // Checks that this move does not put the King in check
+        if (board.theoreticalMove(this, getRow(), getCol(), row, col)) {
+            return false;
+        }
+
         return true;
     }
 
