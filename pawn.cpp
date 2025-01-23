@@ -79,6 +79,11 @@ namespace chess {
             }
         }
 
+        // Checks that this move does not reveal a discovered check
+        if (board.theoreticalMove(this, getRow(), getCol(), row, col)) {
+            return false;
+        }
+
         if (abs(getRow() - row) == 2) { setPassant(true); }
         hasMoved = true;
         return true;

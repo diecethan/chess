@@ -61,7 +61,7 @@ namespace chess {
                 }
 
                 Piece* checkPiece = board.getPiece(checkRow, checkCol);
-                if (checkPiece) {
+                if (checkPiece != nullptr) {
                     if (checkPiece->getColor() != color && (checkPiece->getSymbol() == 'B' || checkPiece->getSymbol() == 'Q')) {
                         return true;
                     }

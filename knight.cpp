@@ -20,10 +20,14 @@ namespace chess {
         if (abs(getRow() - row) == 2 && abs(getCol() - col) == 1) {
             if (board.getPiece(row, col) != nullptr && board.getPiece(row, col)->getColor() == getColor()) {
                 return false;
-            
             }
             
             return true;
+        }
+
+        // Checks that this move does not reveal a discovered check
+        if (board.theoreticalMove(this, getRow(), getCol(), row, col)) {
+            return false;
         }
 
         return false;

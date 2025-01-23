@@ -54,6 +54,11 @@ namespace chess {
         if (board.getPiece(row, col) != nullptr && board.getPiece(row, col)->getColor() == getColor()) {
             return false;
         }
+
+        // Checks that this move does not reveal a discovered check
+        if (board.theoreticalMove(this, getRow(), getCol(), row, col)) {
+            return false;
+        }
         
         return true;
     }

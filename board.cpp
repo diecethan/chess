@@ -18,7 +18,7 @@
 using namespace std;
 
 namespace chess {
-    Board::Board() : currColor(true), p1pts(0), p2pts(0) {
+    Board::Board() : currColor(true), p1pts(0), p2pts(0){
         for (int row = 0; row < 8; row++) {
             vector<Piece*> pieces(8, nullptr);
             
@@ -40,9 +40,11 @@ namespace chess {
 
             board.push_back(pieces);
         }
-        board[4][3] = new King(4, 3, true);
-        board[4][1] = new Rook(3, 3, false);
-        board[4][2] = new Queen(2, 3, true);
+
+        whiteKing[0] = 0;
+        whiteKing[1] = 4;
+        blackKing[0] = 7;
+        blackKing[1] = 4;
     }
 
     void Board::printBoard() const {
@@ -65,9 +67,6 @@ namespace chess {
             }
             cout << endl;
         }
-
-        bool x = static_cast<King*>(board[4][3])->inCheck(*this);
-        cout << x << endl;
     }
 
     bool Board::move(string src, string dst) {
@@ -76,7 +75,7 @@ namespace chess {
 
         int dstRow = dst[1] - 49;
         int dstCol = dst[0] - 97;
-
+        
         Piece* piece = getPiece(srcRow, srcCol);
         if (piece == nullptr || piece->getColor() != currColor) {
             return false;
@@ -105,6 +104,11 @@ namespace chess {
 
             // Basic updating and checking
             if (board[dstRow][dstCol] != nullptr) {
+                if (currColor) {
+                    p1pts += board[dstRow][dstCol]->getPoints();
+                } else {
+                    p2pts += board[dstRow][dstCol]->getPoints();
+                }
                 delete board[dstRow][dstCol];
             }
 
@@ -114,11 +118,38 @@ namespace chess {
             board[dstRow][dstCol] = piece;
             board[srcRow][srcCol] = nullptr;
 
+            if (piece->getPoints() == 0) {
+                if (currColor) {
+                    whiteKing[0] = dstRow;
+                    whiteKing[1] = dstCol;
+                } else {
+                    blackKing[0] = dstRow;
+                    blackKing[1] = dstCol;
+                }
+            }
+
             currColor = !currColor;
             return true;
         }
 
         currColor = !currColor;
         return false;
+    }
+
+    bool Board::theoreticalMove(Piece* piece, int srcRow, int srcCol, int dstRow, int dstCol) {
+        board[dstRow][dstCol] = piece;
+        board[srcRow][srcCol] = nullptr;
+
+        bool result;
+        if (currColor) {
+            result = static_cast<King*>(getPiece(whiteKing[0], whiteKing[1]))->inCheck(*this);
+        } else {
+            result = static_cast<King*>(getPiece(blackKing[0], blackKing[1]))->inCheck(*this);
+        }
+
+        board[srcRow][srcCol] = piece;
+        board[dstRow][dstCol] = nullptr;
+
+        return result;
     }
 }
