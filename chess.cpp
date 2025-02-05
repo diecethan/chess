@@ -9,21 +9,23 @@ using namespace chess;
 int main() {
     Board board;
     board.printBoard();
-    board.move("e2", "e4");
-    board.printBoard();
-    board.move("e7", "e5");
-    board.printBoard();
-    board.move("a2", "a3");
-    board.printBoard();
-    board.move("a7", "a6");
-    board.printBoard();
-    board.move("e4", "f5");
-    board.printBoard();
-    board.move("e1", "e2");
-    board.printBoard();
-    board.move("d8", "g5");
-    board.printBoard();
-    board.move("e2", "d3");
-    board.printBoard();
+    
+    while (true) {
+        string src, dst;
+        if (board.getCurrPlayer()) {
+            cout << "White to move (format: [source destination] [e2, e4])" << endl;
+        } else {
+            cout << "Black to move (format: [source destination] [e2 e4])" << endl;
+        }
+
+        cin >> src >> dst;
+
+        if (board.move(src, dst)) {
+            board.printBoard();
+        } else {
+            cout << "Illegal move!" << endl;
+        }
+    }
+
     return EXIT_SUCCESS;
 }

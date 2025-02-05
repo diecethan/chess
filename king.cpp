@@ -7,9 +7,34 @@ using namespace std;
 
 namespace chess {
     bool King::legalMove(Board &board, int row, int col) {
+        /*
+        // castling
         if (abs(getRow() - row) > 1 || abs(getCol() - col) > 1) {
+            if (!hasMoved && board.getPiece(row, col) != nullptr && board.getPiece(row, col)->getColor() == getColor() && board.getPiece(row, col)->canCastle()) {
+                if (getCol() < col) {
+                    for (int column = getCol() + 1; column < col; column++) {
+                        if (board.getPiece(row, column) != nullptr) {
+                            return false;
+                        }
+                    }
+
+                    hasMoved = true;
+                    return true;
+                } else {
+                    for (int column = getCol() - 1; column > col; column--) {
+                        if (board.getPiece(row, column) != nullptr) {
+                            return false;
+                        }
+                    }
+
+                    hasMoved = true;
+                    return true;
+                }
+            }
+
             return false;
-        }
+        }*/
+        
         // Check (if there is a piece) if we can take the piece or not
         if (board.getPiece(row, col) != nullptr && board.getPiece(row, col)->getColor() == getColor()) {
             return false;
@@ -20,6 +45,7 @@ namespace chess {
             return false;
         }
 
+        hasMoved = true;
         return true;
     }
 

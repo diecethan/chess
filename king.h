@@ -12,6 +12,8 @@ namespace chess {
             void printPiece();
             bool inCheck(const Board &board);
             bool checkmate(Board &board);
+        private:
+            bool hasMoved = false;
     };
 }
 

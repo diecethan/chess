@@ -14,6 +14,7 @@ namespace chess {
             Piece* getPiece(int row, int col) const { return board[row][col]; }
             bool move(std::string src, std::string dst);
             bool theoreticalMove(Piece* piece, int srcRow, int srcCol, int dstRow, int dstCol);   // Checks for checks
+            bool getCurrPlayer() { return currColor; }
 
         private:
             std::vector<std::vector<Piece*>> board;

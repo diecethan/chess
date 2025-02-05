@@ -60,6 +60,7 @@ namespace chess {
             return false;
         }
         
+        hasMoved = true;
         return true;
     }
 
