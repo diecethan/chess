@@ -24,17 +24,12 @@ namespace chess {
             
             if (row == 0 || row == 7) {
                 pieces[0] = (row == 0) ? new Rook(0, 0, true) : new Rook(7, 0, false);
-                //pieces[1] = (row == 0) ? new Knight(0, 1, true) : new Knight(7, 1, false);
-                //pieces[2] = (row == 0) ? new Bishop(0, 2, true) : new Bishop(7, 2, false);
-                //pieces[3] = (row == 0) ? new Queen(0, 3, true) : new Queen(7, 3, false);
-                pieces[1] = nullptr;
-                pieces[2] = nullptr;
-                pieces[3] = nullptr;
+                pieces[1] = (row == 0) ? new Knight(0, 1, true) : new Knight(7, 1, false);
+                pieces[2] = (row == 0) ? new Bishop(0, 2, true) : new Bishop(7, 2, false);
+                pieces[3] = (row == 0) ? new Queen(0, 3, true) : new Queen(7, 3, false);
                 pieces[4] = (row == 0) ? new King(0, 4, true) : new King(7, 4, false);
-                //pieces[5] = (row == 0) ? new Bishop(0, 5, true) : new Bishop(7, 5, false);
-                //pieces[6] = (row == 0) ? new Knight(0, 6, true) : new Knight(7, 6, false);
-                pieces[5] = nullptr;
-                pieces[6] = nullptr;
+                pieces[5] = (row == 0) ? new Bishop(0, 5, true) : new Bishop(7, 5, false);
+                pieces[6] = (row == 0) ? new Knight(0, 6, true) : new Knight(7, 6, false);
                 pieces[7] = (row == 0) ? new Rook(0, 7, true) : new Rook(7, 7, false);
             }
             else if (row == 1 || row == 6) {
