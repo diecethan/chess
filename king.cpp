@@ -1,39 +1,56 @@
 #include <iostream>
 #include "piece.h"
 #include "king.h"
+#include "rook.h"
 #include "board.h"
 
 using namespace std;
 
 namespace chess {
     bool King::legalMove(Board &board, int row, int col) {
-        /*
         // castling
-        if (abs(getRow() - row) > 1 || abs(getCol() - col) > 1) {
-            if (!hasMoved && board.getPiece(row, col) != nullptr && board.getPiece(row, col)->getColor() == getColor() && board.getPiece(row, col)->canCastle()) {
+        if (abs(getCol() - col) > 1) {
+            if (!hasMoved && !inCheck(board)) {
+                Piece* piece;
+                Rook* rook;
+            
                 if (getCol() < col) {
-                    for (int column = getCol() + 1; column < col; column++) {
-                        if (board.getPiece(row, column) != nullptr) {
-                            return false;
-                        }
-                    }
-
-                    hasMoved = true;
-                    return true;
+                    piece = board.getPiece(row, col + 1);
+                    rook = dynamic_cast<Rook*>(piece);
                 } else {
-                    for (int column = getCol() - 1; column > col; column--) {
-                        if (board.getPiece(row, column) != nullptr) {
-                            return false;
+                    piece = board.getPiece(row, col - 2);
+                    rook = dynamic_cast<Rook*>(piece);
+                }
+
+                if (!rook) {
+                    return false;
+                }
+
+                if (rook->canCastle() && rook->getColor() == getColor()) {
+                    if (getCol() < col) {
+                        for (int column = getCol() + 1; column < col; column++) {
+                            if (board.getPiece(row, column) != nullptr) {
+                                return false;
+                            }
+                        }
+                    } else {
+                        for (int column = getCol() - 1; column > col; column--) {
+                            if (board.getPiece(row, column) != nullptr) {
+                                return false;
+                            }
                         }
                     }
-
-                    hasMoved = true;
-                    return true;
                 }
-            }
 
+                hasMoved = true;
+                return true;
+            }
+        }
+
+        // King trying to move up
+        if (abs(getRow() - row) > 1) {
             return false;
-        }*/
+        }
         
         // Check (if there is a piece) if we can take the piece or not
         if (board.getPiece(row, col) != nullptr && board.getPiece(row, col)->getColor() == getColor()) {
