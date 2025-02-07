@@ -42,6 +42,11 @@ namespace chess {
                     }
                 }
 
+                // Checks that this move does not put the King in check
+                if (board.theoreticalMove(this, getRow(), getCol(), row, col, true)) {
+                    return false;
+                }
+
                 hasMoved = true;
                 return true;
             }
@@ -58,7 +63,7 @@ namespace chess {
         }
 
         // Checks that this move does not put the King in check
-        if (board.theoreticalMove(this, getRow(), getCol(), row, col)) {
+        if (board.theoreticalMove(this, getRow(), getCol(), row, col, false)) {
             return false;
         }
 

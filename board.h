@@ -13,9 +13,9 @@ namespace chess {
             void printBoard() const;
             Piece* getPiece(int row, int col) const { return board[row][col]; }
             bool move(std::string src, std::string dst);
-            bool theoreticalMove(Piece* piece, int srcRow, int srcCol, int dstRow, int dstCol);   // Checks for checks
+            bool theoreticalMove(Piece* piece, int srcRow, int srcCol, int dstRow, int dstCol, bool castling);   // Checks for checks
             bool getCurrPlayer() { return currColor; }
-
+            bool checkmate();
         private:
             std::vector<std::vector<Piece*>> board;
             std::vector<Piece*> updatePieces;   // used to reset en passantability after one turn

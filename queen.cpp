@@ -86,7 +86,7 @@ namespace chess {
         }
 
         // Checks that this move does not reveal a discovered check
-        if (board.theoreticalMove(this, getRow(), getCol(), row, col)) {
+        if (board.theoreticalMove(this, getRow(), getCol(), row, col, false)) {
             return false;
         }
 

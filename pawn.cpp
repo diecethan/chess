@@ -18,10 +18,12 @@ namespace chess {
         }
 
         // Ensure the Pawn moved one forward (or two if first movement)
-        Piece* pieceAtDst, *pieceInFront;
+        Piece* pieceAtDst, *pieceInFront, *leftPiece, *rightPiece;
         if (getColor()) {
             pieceAtDst = board.getPiece(row, col);
             pieceInFront = board.getPiece(getRow() + 1, getCol());
+            leftPiece = board.getPiece(getRow(), getCol() - 1);
+            rightPiece = board.getPiece(getRow(), getCol() + 1);
 
             if (hasMoved) {
                 if (getRow() + 1 != row) {
@@ -39,6 +41,8 @@ namespace chess {
         } else {
             pieceAtDst = board.getPiece(row, col);
             pieceInFront = board.getPiece(getRow() - 1, getCol());
+            leftPiece = board.getPiece(getRow(), getCol() - 1);
+            rightPiece = board.getPiece(getRow(), getCol() + 1);
 
             if (hasMoved) {
                 if (getRow() - 1 != row) {
@@ -61,16 +65,30 @@ namespace chess {
             }
 
             if (pieceAtDst == nullptr) {
-                if (pieceInFront == nullptr) {
-                    return false;
-                }
+                if (col > getCol()) {
+                    if (rightPiece == nullptr) {
+                        return false;
+                    }
 
-                if (pieceInFront->getPoints() != 1) {
-                    return false;
-                }
+                    if (rightPiece->getPoints() != 1) {
+                        return false;
+                    }
 
-                if (!static_cast<Pawn*>(pieceInFront)->getPassant()) {
-                    return false;
+                    if (!static_cast<Pawn*>(rightPiece)->getPassant()) {
+                        return false;
+                    }
+                } else {
+                    if (leftPiece == nullptr) {
+                        return false;
+                    }
+
+                    if (leftPiece->getPoints() != 1) {
+                        return false;
+                    }
+
+                    if (!static_cast<Pawn*>(leftPiece)->getPassant()) {
+                        return false;
+                    }
                 }
             }
         } else {
@@ -80,7 +98,7 @@ namespace chess {
         }
 
         // Checks that this move does not reveal a discovered check
-        if (board.theoreticalMove(this, getRow(), getCol(), row, col)) {
+        if (board.theoreticalMove(this, getRow(), getCol(), row, col, false)) {
             return false;
         }
 

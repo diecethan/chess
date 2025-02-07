@@ -96,8 +96,13 @@ namespace chess {
                 }
 
                 if (board[dstRow][dstCol] == nullptr &&  srcCol != dstCol) {
-                    delete board[dstRow][srcCol];
-                    board[dstRow][srcCol] = nullptr;
+                    if (currColor) {
+                        delete board[dstRow - 1][dstCol];
+                        board[dstRow - 1][dstCol] = nullptr;
+                    } else {
+                        delete board[dstRow + 1][dstCol];
+                        board[dstRow + 1][dstCol] = nullptr;
+                    }
                 }
             }
 
@@ -112,12 +117,48 @@ namespace chess {
             }
 
             // castling and King Position updating for theoreticalMove()
-            if (piece->getPoints() > 0) {
+            if (piece->getPoints() > 1) {
                 piece->setRow(dstRow);
                 piece->setCol(dstCol);
 
                 board[dstRow][dstCol] = piece;
                 board[srcRow][srcCol] = nullptr;
+            } 
+            else if (piece->getPoints() == 1) {
+                if (dstRow == 0 || dstRow == 7) {
+                    delete piece;
+                    board[srcRow][srcCol] = nullptr;
+                    
+                    char newPiece;
+                    
+                    while (newPiece != 'Q' && newPiece != 'R' && newPiece != 'N' && newPiece != 'B') {
+                        cout << "What piece would you like to promote to (Q, R, N, B)? ";
+                        cin >> newPiece;
+                        cout << endl;
+                    }
+
+                    switch (newPiece) {
+                        case 'Q':
+                            board[dstRow][dstCol] = new Queen(dstRow, dstCol, currColor);
+                            break;
+                        case 'R':
+                            board[dstRow][dstCol] = new Rook(dstRow, dstCol, currColor);
+                            break;
+                        case 'N':
+                            board[dstRow][dstCol] = new Knight(dstRow, dstCol, currColor);
+                            break;
+                        case 'B':
+                            board[dstRow][dstCol] = new Bishop(dstRow, dstCol, currColor);
+                            break;
+                    }
+
+                } else {
+                    piece->setRow(dstRow);
+                    piece->setCol(dstCol);
+
+                    board[dstRow][dstCol] = piece;
+                    board[srcRow][srcCol] = nullptr;
+                }
             } else {
                 // castling movement
                 if (abs(srcCol - dstCol) > 1) {
@@ -171,40 +212,119 @@ namespace chess {
         return false;
     }
 
-    bool Board::theoreticalMove(Piece* piece, int srcRow, int srcCol, int dstRow, int dstCol) {
-        board[dstRow][dstCol] = piece;
-        board[srcRow][srcCol] = nullptr;
-
+    bool Board::theoreticalMove(Piece* piece, int srcRow, int srcCol, int dstRow, int dstCol, bool castling) {
         bool result;
-        if (currColor) {
-            if (piece->getPoints() == 0) {
-                piece->setRow(dstRow);
-                piece->setCol(dstCol);
+        if (!castling) {
+            Piece* tempPiece = (board[dstRow][dstCol] == nullptr) ? nullptr : board[dstRow][dstCol];
 
-                result = static_cast<King*>(piece)->inCheck(*this);
+            board[dstRow][dstCol] = piece;
+            board[srcRow][srcCol] = nullptr;
 
-                piece->setRow(srcRow);
-                piece->setCol(srcCol);
+            if (currColor) {
+                if (piece->getPoints() == 0) {
+                    piece->setRow(dstRow);
+                    piece->setCol(dstCol);
+
+                    result = static_cast<King*>(piece)->inCheck(*this);
+
+                    piece->setRow(srcRow);
+                    piece->setCol(srcCol);
+                } else {
+                    result = static_cast<King*>(getPiece(whiteKing[0], whiteKing[1]))->inCheck(*this);
+                }
             } else {
-                result = static_cast<King*>(getPiece(whiteKing[0], whiteKing[1]))->inCheck(*this);
+                if (piece->getPoints() == 0) {
+                    piece->setRow(dstRow);
+                    piece->setCol(dstCol);
+
+                    result = static_cast<King*>(piece)->inCheck(*this);
+
+                    piece->setRow(srcRow);
+                    piece->setCol(srcCol);
+                } else {
+                    result = static_cast<King*>(getPiece(blackKing[0], blackKing[1]))->inCheck(*this);
+                }
             }
+
+            board[srcRow][srcCol] = piece;
+            board[dstRow][dstCol] = tempPiece;
+
+            return result;
         } else {
-            if (piece->getPoints() == 0) {
-                piece->setRow(dstRow);
+            Rook* rook;
+            
+            if (srcCol > dstCol) {
+                rook = static_cast<Rook*>(getPiece(dstRow, dstCol - 2));
+                
                 piece->setCol(dstCol);
+
+                board[dstRow][dstCol] = piece;
+                board[dstRow][dstCol + 1] = rook;
+                
+                board[srcRow][srcCol] = nullptr;
+                board[dstRow][dstCol - 2] = nullptr;
 
                 result = static_cast<King*>(piece)->inCheck(*this);
 
-                piece->setRow(srcRow);
                 piece->setCol(srcCol);
+
+                board[dstRow][dstCol] = nullptr;
+                board[dstRow][dstCol + 1] = nullptr;
+                
+                board[srcRow][srcCol] = piece;
+                board[dstRow][dstCol - 2] = rook;
             } else {
-                result = static_cast<King*>(getPiece(blackKing[0], blackKing[1]))->inCheck(*this);
+                rook = static_cast<Rook*>(getPiece(dstRow, dstCol + 1));
+                
+                piece->setCol(dstCol);
+
+                board[dstRow][dstCol] = piece;
+                board[dstRow][dstCol - 1] = rook;
+                
+                board[srcRow][srcCol] = nullptr;
+                board[dstRow][dstCol + 1] = nullptr;
+                
+                result = static_cast<King*>(piece)->inCheck(*this);
+
+                piece->setCol(srcCol);
+
+                board[dstRow][dstCol] = nullptr;
+                board[dstRow][dstCol - 1] = nullptr;
+                
+                board[srcRow][srcCol] = piece;
+                board[dstRow][dstCol + 1] = rook;
+            }
+
+            return result;
+        }
+    }
+
+    bool Board::checkmate() {
+        King* king;
+        if (currColor) {
+            king = static_cast<King*>(getPiece(whiteKing[0], whiteKing[1]));
+        } else {
+            king = static_cast<King*>(getPiece(blackKing[0], blackKing[1]));
+        }
+
+        if (!king->inCheck(*this)) {
+            return false;
+        }
+
+        int kingDirs[8][2] = { {0, 1}, {0, -1}, {1, 0}, {-1, 0}, {1, 1}, {1, -1}, {-1, 1}, {-1, -1} };
+        for (auto &dir : kingDirs) {
+            int checkRow = king->getRow() + dir[0];
+            int checkCol = king->getCol() + dir[1];
+
+            if (checkRow >= 0 && checkRow < 8 && checkCol >= 0 && checkCol < 8) {
+                if (king->legalMove(*this, checkRow, checkCol)) {
+                    if (!theoreticalMove(king, king->getRow(), king->getCol(), checkRow, checkCol, false)) {
+                        return false;
+                    }
+                }
             }
         }
 
-        board[srcRow][srcCol] = piece;
-        board[dstRow][dstCol] = nullptr;
-
-        return result;
+        return true;
     }
 }
